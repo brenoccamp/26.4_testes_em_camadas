@@ -38,36 +38,57 @@ describe('Insere um novo filme no BD', () => {
 });
 
 describe('Query movie by "id"', () => {
-  const id = '0';
+  const id = '1';
 
   before(() => {
+    const movie = {
+      id: 1,
+      title: 'Example Movie',
+      directed_by: 'Jane Dow',
+      release_year: 1999,
+    };
+
     const MoviesModelResponse = [{
       status: 200,
-      message: 'Movie not found'
+      data: movie,
     }];
 
     sinon.stub(connection, 'execute').resolves(MoviesModelResponse);
   });
 
-  describe('when informed "id" is not valid', () => {
+  after(() => {
+    connection.execute.restore();
+  });
 
-    it('returns an object with properties "status" and "message"', async () => {
+  describe('when informed "id" is found', () => {
+
+    it('returns an object with properties: "status" and "data"', async () => {
       const response = await MoviesModel.getById(id);
 
       expect(response).to.be.an('object');
+      expect(response).to.have.a.property('status');
+      expect(response).to.have.a.property('data');
     });
 
-    it('returns property message: "Movie not found"', async () => {
+    it('is property data equal an object', async () => {
       const response = await MoviesModel.getById(id);
 
-      expect(response.message).to.be.equal('Movie not found');
+      expect(response.data).to.be.an('object');
     });
 
-    it('returns property status: "404"', async () => {
+    it('is property status equal "200"', async () => {
       const response = await MoviesModel.getById(id);
 
       expect(response.status).to.be.equal(200);
     });
+  });
 
-  })
+  describe('when informed "id" is not found', () => {
+    it('property data is an empty object', async () => {
+      const response = await MoviesModel.getById(id);
+
+      expect(response.data).to.be.an('object');
+      expect(response.data).to.be.empty;
+    });
+  });
 });
