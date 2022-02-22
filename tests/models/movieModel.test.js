@@ -36,3 +36,38 @@ describe('Insere um novo filme no BD', () => {
 
   });
 });
+
+describe('Query movie by "id"', () => {
+  const id = '0';
+
+  before(() => {
+    const MoviesModelResponse = [{
+      status: 200,
+      message: 'Movie not found'
+    }];
+
+    sinon.stub(connection, 'execute').resolves(MoviesModelResponse);
+  });
+
+  describe('when informed "id" is not valid', () => {
+
+    it('returns an object with properties "status" and "message"', async () => {
+      const response = await MoviesModel.getById(id);
+
+      expect(response).to.be.an('object');
+    });
+
+    it('returns property message: "Movie not found"', async () => {
+      const response = await MoviesModel.getById(id);
+
+      expect(response.message).to.be.equal('Movie not found');
+    });
+
+    it('returns property status: "404"', async () => {
+      const response = await MoviesModel.getById(id);
+
+      expect(response.status).to.be.equal(200);
+    });
+
+  })
+});
