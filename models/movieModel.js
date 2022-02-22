@@ -1,35 +1,17 @@
-const mongoConnection = require('./connection');
-
-const getAll = async () => {
-  const moviesCollection = await mongoConnection.getConnection()
-    .then((db) => db.collection('movies'));
-
-  const movies = await moviesCollection
-    .find()
-    .toArray();
-
-  return movies.map(({ _id, ...movieData }) => ({
-    id: _id,
-    ...movieData,
-  }));
-};
+const connection = require('./connection');
 
 const create = async ({ title, directedBy, releaseYear }) => {
-  const moviesCollection = await mongoConnection.getConnection()
-    .then((db) => db.collection('movies'));
-
-  const { insertedId: id } = await moviesCollection
-    .insertOne({ title, directedBy, releaseYear });
+  const [result] = await connection
+    .execute(
+      "INSERT INTO model_example.movies (title, directed_by, release_year) VALUES (?, ?, ?)",
+      [title, directedBy, releaseYear]
+    );
 
   return {
-    id,
-    title,
-    directedBy,
-    releaseYear
+    id: result.insertId,
   };
 };
 
 module.exports = {
   create,
-  getAll,
 };
