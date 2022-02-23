@@ -40,7 +40,7 @@ describe('Ao chamar o controller de create', () => {
   });
 
   describe('quando é inserido com sucesso', async () => {
-    const response = { status: () => {}, send: () => {} };
+    const response = {/* status: () => {}, send: () => {}*/};
     const request = {};
 
     before(() => {
@@ -50,12 +50,12 @@ describe('Ao chamar o controller de create', () => {
         releaseYear: 1999,
       };
 
-      // response.status = sinon.stub()
-      //   .returns(response);
-      // response.send = sinon.stub()
-      //   .returns();
-      sinon.stub(response, 'status').returns(response);
-      sinon.stub(response, 'send').returns();
+      response.status = sinon.stub()
+        .returns(response);
+      response.send = sinon.stub()
+        .returns();
+      // sinon.stub(response, 'status').returns(response);
+      // sinon.stub(response, 'send').returns();
 
       sinon.stub(MoviesService, 'create')
         .resolves(true);
@@ -76,6 +76,26 @@ describe('Ao chamar o controller de create', () => {
 
       expect(response.send.calledWith('Filme criado com sucesso!')).to.be.equal(true);
     });
-
   });
 });
+
+describe('When called getById Controller', () => {
+  let request = {}, response = {};
+  describe('with invalid "id"', () => {
+    before(() => {
+      request.body = {
+        id: 'a',
+      };
+
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+    });
+
+    it('call response.status with 422 and response.json as: "{ message: "Invalid id" }"', async () => {
+      await MoviesController.getById(request, response);
+
+      expect(response.status.calledWith(422)).to.be.equal(true);
+      expect(response.json.calledWith({ message: 'Invalid id' })).to.be.equal(true);
+    });
+  });
+})

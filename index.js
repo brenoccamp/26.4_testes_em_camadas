@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -9,7 +11,7 @@ app.use(bodyParser.json());
 
 app.post('/movies', MovieController.create);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.MYSQL_PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Ouvindo a porta ${PORT}`);

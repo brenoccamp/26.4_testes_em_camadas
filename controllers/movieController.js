@@ -17,6 +17,13 @@ const create = async (req, res) => {
     .send('Filme criado com sucesso!');
 };
 
+const getById = (req, res, _next) => {
+  const { id } = req.body;
+
+  if (isNaN(id)) return res.status(422).json({ message: 'Invalid id' });
+}
+
 module.exports = {
   create,
+  getById,
 };
