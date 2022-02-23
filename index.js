@@ -11,6 +11,8 @@ app.use(bodyParser.json());
 
 app.post('/movies', MovieController.create);
 
+app.get('/movies/:id', MovieController.getById);
+
 const PORT = process.env.MYSQL_PORT || 3000;
 
 app.listen(PORT, () => {

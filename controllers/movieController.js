@@ -18,7 +18,7 @@ const create = async (req, res) => {
 };
 
 const getById = async (req, res, _next) => {
-  const { id } = req.body;
+  const { id } = req.params;
 
   if (isNaN(id)) return res.status(422).json({ message: 'Invalid id' });
 
