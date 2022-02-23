@@ -98,4 +98,67 @@ describe('When called getById Controller', () => {
       expect(response.json.calledWith({ message: 'Invalid id' })).to.be.equal(true);
     });
   });
+
+  describe('when "id" is valid but not found', () => {
+    before(() => {
+      request.body = {
+        id: '0',
+      };
+
+      const serviceResponse = {
+        status: 404,
+        error_message: 'Movie not found'
+      };
+
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+
+      sinon.stub(MoviesService, 'getById').resolves(serviceResponse);
+    });
+
+    after(() => {
+      MoviesService.getById.restore();
+    });
+
+    it('call response.status with 404 and response.json as: "{ error_message: "Movie not found" }"', async () => {
+      await MoviesController.getById(request, response);
+
+      expect(response.status.calledWith(404)).to.be.equal(true);
+      expect(response.json.calledWith({ error_message: 'Movie not found' })).to.be.equal(true);
+    });
+  });
+
+  describe('when "id" is valid', () => {
+    const serviceResponse = {
+      status: 200,
+      data: {
+        id: 1,
+        title: 'Movie Example',
+        directed_by: 'brenoccamp',
+        release_year: 2022,
+      },
+    };
+
+    before(() => {
+      request.body = {
+        id: '3',
+      };
+
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+
+      sinon.stub(MoviesService, 'getById').resolves(serviceResponse);
+    });
+
+    after(() => {
+      MoviesService.getById.restore();
+    });
+
+    it('call response.status with 200 and response.json with key data containing the movie informations', async () => {
+      await MoviesController.getById(request, response);
+
+      expect(response.status.calledWith(200)).to.be.equal(true);
+      expect(response.json.calledWith(serviceResponse.data)).to.be.equal(true);
+    });
+  });
 })
