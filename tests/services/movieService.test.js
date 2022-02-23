@@ -94,6 +94,23 @@ describe('Get a movie by "id"', () => {
   });
 
   describe('when exists "id" on DB', () => {
+    before(() => {
+      const moviesModelResponse = {
+        status: 200,
+        data: {
+          id: '1',
+          title: 'Movie Example',
+          directed_by: 'Trybe',
+          release_year: 2022,
+        },
+      };
+
+      sinon.stub(MoviesModel, 'getById').resolves(moviesModelResponse);
+    });
+
+    after(() => {
+      MoviesModel.getById.restore();
+    });
     it('return an object with properties: "status" and "data"', async () => {
       const response = await MoviesService.getById(id);
 
