@@ -40,7 +40,7 @@ describe('Ao chamar o controller de create', () => {
   });
 
   describe('quando é inserido com sucesso', async () => {
-    const response = {};
+    const response = { status: () => {}, send: () => {} };
     const request = {};
 
     before(() => {
@@ -50,10 +50,12 @@ describe('Ao chamar o controller de create', () => {
         releaseYear: 1999,
       };
 
-      response.status = sinon.stub()
-        .returns(response);
-      response.send = sinon.stub()
-        .returns();
+      // response.status = sinon.stub()
+      //   .returns(response);
+      // response.send = sinon.stub()
+      //   .returns();
+      sinon.stub(response, 'status').returns(response);
+      sinon.stub(response, 'send').returns();
 
       sinon.stub(MoviesService, 'create')
         .resolves(true);
